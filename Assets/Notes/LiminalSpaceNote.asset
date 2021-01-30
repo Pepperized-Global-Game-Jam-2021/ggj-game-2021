@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9183bd7595e134287a0599e59a8502, type: 3}
+  m_Name: LiminalSpaceNote
+  m_EditorClassIdentifier: 
+  Title: On Quantum Theory
+  Text: The walls within this place reminds me of Quantum Superposition, but this
+    is on a scale nothing like it. The walls seems to have some kind of intelligence,
+    they react to how you traverse them. I'm sure there's a rational explaination
+    for all of this. I just... need to... make sense of it...

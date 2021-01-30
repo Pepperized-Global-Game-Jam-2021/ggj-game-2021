@@ -7,6 +7,7 @@ public class TeleportEntity : MonoBehaviour
     public Vector3 TeleportPosition;
     public bool IsDirectional = false;
     public PortalDirections portalDirections;
+    public DirectorController.Flags requiredFlag;
     
     [System.Serializable]
     public class PortalDirections

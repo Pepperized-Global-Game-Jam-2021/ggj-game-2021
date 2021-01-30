@@ -334,6 +334,7 @@ MonoBehaviour:
     NegX: 0
     PosZ: 0
     NegZ: 0
+  requiredFlag: 0
 --- !u!114 &3573245524139382177
 MonoBehaviour:
   m_ObjectHideFlags: 0

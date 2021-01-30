@@ -8,6 +8,7 @@ TagManager:
   - LiminalWall
   - Teleporter
   - Fireplace
+  - Door
   layers:
   - Default
   - TransparentFX

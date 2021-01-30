@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Uween;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,7 +15,11 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     public LayerMask interactMask;
     public LayerMask touchableMask;
-    public Transform pickupIcon;
+    public Transform handIconObject;
+    public Sprite pickupSprite;
+    public Sprite pushSprite;
+
+    private Image handIcon;
 
     CharacterController characterController;
     bool grounded = true;
@@ -50,7 +55,14 @@ public class PlayerController : MonoBehaviour
         self = transform;
         playerObject = gameObject;
         characterController = GetComponent<CharacterController>();
+        handIcon = handIconObject.GetComponent<Image>();
         Cursor.lockState = CursorLockMode.Locked;
+
+        MessageController.instance.EnqueueMessage("WASD to move, mouse to look");
+        MessageController.instance.EnqueueMessage("Hold space to close your eyes");
+        MessageController.instance.EnqueueMessage("You are constantly freezing");
+        MessageController.instance.EnqueueMessage("Find notes to burn at the fireplace");
+        
     }
 
     // Update is called once per frame
@@ -84,18 +96,34 @@ public class PlayerController : MonoBehaviour
 
         if (currentNote == null)
         {
-            Debug.Log("step1");
             currentNote = collectedNotes[0];
             collectedNotes.Remove(currentNote);
             NoteController.instance.DisplayNote(currentNote);
+            MessageController.instance.EnqueueMessage("Click to burn...");
         }
         else
         {
-            Debug.Log("step2");
+            CheckNoteForFlags(currentNote);
             NoteController.instance.BurnNote();
             currentNote = null;
             MessageController.instance.DisplayMessage("You feel yourself become warmer...");
             DirectorController.instance.frozenPercent = 0;
+            if (collectedNotes.Count == 0)
+            {
+                state = State.Normal;
+            }
+        }
+    }
+
+    void CheckNoteForFlags(Note note)
+    {
+        switch (note.Title)
+        {
+            case "The Walls Themselves":
+                DirectorController.instance.CompleteFlag(DirectorController.Flags.FirstNoteTaken);
+                break;
+            default:
+                break;
         }
     }
 
@@ -106,32 +134,61 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, interactDistance, interactMask))
         {
-            pickupIcon.gameObject.SetActive(true);
-            if (Input.GetButton("Interact"))
+            
+
+            var hitGameobject = hit.transform.gameObject;
+            if (hitGameobject.tag == "Note")
             {
-                var hitGameobject = hit.transform.gameObject;
-                if (hitGameobject.tag == "Note")
+                handIconObject.gameObject.SetActive(true);
+                handIcon.sprite = pickupSprite;
+                if (Input.GetButton("Interact"))
                 {
-                    Note note = hitGameobject.GetComponent<NoteEntity>().Note;
+                    var noteEntity = hitGameobject.GetComponent<NoteEntity>();
+                    Note note = noteEntity.Note;
+                    if (noteEntity.pickupFlag != DirectorController.Flags.None)
+                    {
+                        DirectorController.instance.CompleteFlag(noteEntity.pickupFlag);
+                    }
                     if (!collectedNotes.Contains(note))
                     {
                         collectedNotes.Add(note);
                         MessageController.instance.DisplayMessage("You picked up a note...");
                         Destroy(hitGameobject);
                     }
-                    
                 }
-                if (hitGameobject.tag == "Fireplace" && collectedNotes.Count > 0)
+            }
+            if (hitGameobject.tag == "Fireplace" && collectedNotes.Count > 0)
+            {
+                handIconObject.gameObject.SetActive(true);
+                handIcon.sprite = pickupSprite;
+                if (Input.GetButton("Interact"))
                 {
                     state = State.BurningNotes;
                     NoteInteraction();
-                    pickupIcon.gameObject.SetActive(false);
+                    handIconObject.gameObject.SetActive(false);
                 }
             }
+            if (hitGameobject.tag == "Door")
+            {
+                
+                DoorController doorController = hitGameobject.GetComponentInParent<DoorController>();
+                bool flagCompleted = doorController.requiredFlag == DirectorController.Flags.None || DirectorController.instance.IsFlagCompleted(doorController.requiredFlag);
+                if (!doorController.isOpen && flagCompleted)
+                {
+                    handIconObject.gameObject.SetActive(true);
+                    handIcon.sprite = pushSprite;
+                    if (Input.GetButton("Interact"))
+                    {
+                        doorController.isOpen = true;
+                        doorController.OpenDoor(transform.position);
+                    }
+                }
+            }
+            
         }
         else
         {
-            pickupIcon.gameObject.SetActive(false);
+            handIconObject.gameObject.SetActive(false);
         }
     }
 

@@ -13,6 +13,10 @@ public class MessageController : MonoBehaviour
 
     private Color initialColour;
 
+    public string currentMessage = null;
+
+    public Queue<string> messageQueue = new Queue<string>();
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -20,7 +24,22 @@ public class MessageController : MonoBehaviour
 
     private void Start()
     {
+        currentMessage = null;
         initialColour = messageText.color;
+    }
+
+    public void EnqueueMessage(string message)
+    {
+        messageQueue.Enqueue(message);
+    }
+
+    private void Update()
+    {
+        if (currentMessage == null && messageQueue.Count > 0)
+        {
+            currentMessage = messageQueue.Dequeue();
+            DisplayMessage(currentMessage);
+        }
     }
 
     public void DisplayMessage(string message)
@@ -41,6 +60,7 @@ public class MessageController : MonoBehaviour
             messageText.color = new Color(initialColour.r, initialColour.g, initialColour.b, percent);
             yield return null;
         }
+        currentMessage = null;
         yield return null;
     }
 }

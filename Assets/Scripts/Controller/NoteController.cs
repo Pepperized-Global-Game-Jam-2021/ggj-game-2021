@@ -30,6 +30,7 @@ public class NoteController : MonoBehaviour
 
     public void DisplayNote(Note note)
     {
+        noteMaterial.SetFloat("Dissolve_Value", 1);
         Title.text = note.Title;
         Text.text = note.Text;
         Title.color = titleStartColour;
@@ -49,6 +50,7 @@ public class NoteController : MonoBehaviour
         while (percent > 0)
         {
             percent -= Time.deltaTime;
+            if (percent < 0) percent = 0;
             noteMaterial.SetFloat("Dissolve_Value", percent);
             Title.color = new Color(titleStartColour.r, titleStartColour.g, titleStartColour.b, percent);
             Text.color = new Color(textStartColour.r, textStartColour.g, textStartColour.b, percent);

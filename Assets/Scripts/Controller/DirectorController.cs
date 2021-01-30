@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class DirectorController : MonoBehaviour
 {
+    public enum Flags
+    {
+        None,
+        FirstNoteTaken,
+        SecondNoteTaken
+    }
+
     public float frozenPercent = 0f;
     public float freezeSpeed = 0.01f;
     public float eyesOpenPercent = 1f;
@@ -13,6 +20,18 @@ public class DirectorController : MonoBehaviour
     public bool isFreezingPaused = false;
 
     public static DirectorController instance;
+
+    List<Flags> flagsCompleted = new List<Flags>();
+
+    public void CompleteFlag(Flags flag)
+    {
+        flagsCompleted.Add(flag);
+    }
+
+    public bool IsFlagCompleted(Flags flag)
+    {
+        return flagsCompleted.Contains(flag);
+    }
 
     private void Awake()
     {
