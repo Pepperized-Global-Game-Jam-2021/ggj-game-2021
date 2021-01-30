@@ -9,6 +9,8 @@ public class DirectorController : MonoBehaviour
     public float eyesOpenPercent = 1f;
     public float eyesClosedSpeed = 2f;
     public Material eyesClosedMaterial;
+    public AnimationCurve frozenEyeCloseCurve;
+    public bool isFreezingPaused = false;
 
     public static DirectorController instance;
 
@@ -27,7 +29,15 @@ public class DirectorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        frozenPercent += freezeSpeed * Time.deltaTime;
+        if (!isFreezingPaused) frozenPercent += freezeSpeed * Time.deltaTime;
+
+        float eyesOpenMaxPercent = 1;
+
+        if (frozenPercent > 0.8f)
+        {
+            eyesOpenMaxPercent = frozenEyeCloseCurve.Evaluate(Mathf.InverseLerp(1, 0.8f, frozenPercent));
+        }
+
         if (Input.GetButton("CloseEyes"))
         {
             eyesOpenPercent -= eyesClosedSpeed * Time.deltaTime;
@@ -36,8 +46,13 @@ public class DirectorController : MonoBehaviour
         else
         {
             eyesOpenPercent += eyesClosedSpeed * Time.deltaTime;
-            if (eyesOpenPercent > 1) eyesOpenPercent = 1;
+            if (eyesOpenPercent > eyesOpenMaxPercent) eyesOpenPercent = eyesOpenMaxPercent;
         }
         eyesClosedMaterial.SetFloat("Percent_Value", eyesOpenPercent);
+
+        if (frozenPercent > 1)
+        {
+            Debug.Log("ded");
+        }
     }
 }

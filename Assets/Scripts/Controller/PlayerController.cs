@@ -15,14 +15,13 @@ public class PlayerController : MonoBehaviour
     public LayerMask interactMask;
     public LayerMask touchableMask;
     public Transform pickupIcon;
-    public NoteController noteController;
 
     CharacterController characterController;
     bool grounded = true;
     const float gravity = -9.81f;
     const float groundDistance = 0.1f;
     const float interactDistance = 3f;
-    const float touchDistance = 2f;
+    const float touchDistance = 1f;
 
     float rotationX;
 
@@ -32,11 +31,22 @@ public class PlayerController : MonoBehaviour
     GameObject playerObject;
 
     List<Note> collectedNotes = new List<Note>();
+    Note currentNote;
+
     List<Guid> wallsPassed = new List<Guid>();
+
+    private enum State
+    {
+        Normal,
+        BurningNotes
+    }
+
+    State state;
 
     // Start is called before the first frame update
     void Start()
     {
+        state = State.Normal;
         self = transform;
         playerObject = gameObject;
         characterController = GetComponent<CharacterController>();
@@ -46,11 +56,47 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateGrounded();
-        UpdateMovement();
-        UpdateLook();
-        UpdatePickup();
-        UpdateTouch();
+        if (state == State.Normal)
+        {
+            UpdateGrounded();
+            UpdateMovement();
+            UpdateLook();
+            UpdatePickup();
+            UpdateTouch();
+        }
+        else if (state == State.BurningNotes)
+        {
+            if (Input.GetButtonDown("Interact"))
+            {
+                NoteInteraction();
+            }
+        }
+        
+    }
+
+    void NoteInteraction()
+    {
+        if (collectedNotes.Count == 0 && currentNote == null)
+        {
+            state = State.Normal;
+            return;
+        }
+
+        if (currentNote == null)
+        {
+            Debug.Log("step1");
+            currentNote = collectedNotes[0];
+            collectedNotes.Remove(currentNote);
+            NoteController.instance.DisplayNote(currentNote);
+        }
+        else
+        {
+            Debug.Log("step2");
+            NoteController.instance.BurnNote();
+            currentNote = null;
+            MessageController.instance.DisplayMessage("You feel yourself become warmer...");
+            DirectorController.instance.frozenPercent = 0;
+        }
     }
 
     void UpdatePickup()
@@ -67,8 +113,19 @@ public class PlayerController : MonoBehaviour
                 if (hitGameobject.tag == "Note")
                 {
                     Note note = hitGameobject.GetComponent<NoteEntity>().Note;
-                    noteController.DisplayNote(note);
-                    Destroy(hitGameobject);
+                    if (!collectedNotes.Contains(note))
+                    {
+                        collectedNotes.Add(note);
+                        MessageController.instance.DisplayMessage("You picked up a note...");
+                        Destroy(hitGameobject);
+                    }
+                    
+                }
+                if (hitGameobject.tag == "Fireplace" && collectedNotes.Count > 0)
+                {
+                    state = State.BurningNotes;
+                    NoteInteraction();
+                    pickupIcon.gameObject.SetActive(false);
                 }
             }
         }

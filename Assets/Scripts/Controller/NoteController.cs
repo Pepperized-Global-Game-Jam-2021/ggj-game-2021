@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class NoteController : MonoBehaviour
 {
-    
+    public static NoteController instance;
+
     public TextMeshProUGUI Title;
     public TextMeshProUGUI Text;
     public Material noteMaterial;
@@ -17,7 +18,7 @@ public class NoteController : MonoBehaviour
 
     private void Start()
     {
-
+        if (instance == null) instance = this;
         titleStartColour = Title.color;
         textStartColour = Text.color;
     }
@@ -44,6 +45,7 @@ public class NoteController : MonoBehaviour
     IEnumerator BurnNoteCoroutine()
     {
         float percent = 1;
+        noteMaterial.SetFloat("Dissolve_Value", 1);
         while (percent > 0)
         {
             percent -= Time.deltaTime;
