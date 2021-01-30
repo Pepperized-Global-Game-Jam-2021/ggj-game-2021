@@ -879,7 +879,7 @@
     },
     "m_Name": "Dissolve",
     "m_DefaultReferenceName": "Vector1_5cd7139b56484e2981ec692dbb44ad6d",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "Dissolve_Value",
     "m_GeneratePropertyBlock": true,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     public LayerMask interactMask;
     public Transform pickupIcon;
+    public NoteController noteController;
 
     CharacterController characterController;
     bool grounded = true;
@@ -59,6 +60,14 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButton("Interact"))
             {
                 var hitGameobject = hit.transform.gameObject;
+                if (hitGameobject.tag == "Note")
+                {
+                    Note note = hitGameobject.GetComponent<NoteEntity>().Note;
+                    noteController.DisplayNote(note);
+                }
+
+                
+
                 Destroy(hitGameobject);
             }
         }
