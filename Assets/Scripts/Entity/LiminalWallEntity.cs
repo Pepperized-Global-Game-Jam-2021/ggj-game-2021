@@ -7,21 +7,16 @@ public class LiminalWallEntity : MonoBehaviour
     DirectorController director;
     MeshCollider col;
 
+    public Vector3 teleportTarget;
+
     private void Start()
     {
         director = DirectorController.instance;
         col = GetComponent<MeshCollider>();
     }
 
-    private void Update()
+    private void OnDrawGizmosSelected()
     {
-        if (director.eyesOpenPercent < 0.1f)
-        {
-            col.enabled = false;
-        }
-        else
-        {
-            col.enabled = true;
-        }
+        Gizmos.DrawSphere(transform.position + teleportTarget, 0.5f);
     }
 }

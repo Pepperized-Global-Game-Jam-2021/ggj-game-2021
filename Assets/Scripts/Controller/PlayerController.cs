@@ -126,4 +126,25 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+       
+        var colTransform = collision.transform;
+        GameObject colGameObject = colTransform.gameObject;
+        Debug.Log(colTransform.tag);
+        switch (colTransform.tag)
+        {
+            case "LiminalWall":
+                if (DirectorController.instance.eyesOpenPercent < 0.1f)
+                {
+                    var liminalEntity = colGameObject.GetComponent<LiminalWallEntity>();
+                    Vector3 target = liminalEntity.teleportTarget + colTransform.position;
+                    self.position = target;
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
