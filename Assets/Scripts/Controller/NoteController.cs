@@ -17,7 +17,6 @@ public class NoteController : MonoBehaviour
 
     private void Start()
     {
-        noteTransform = transform;
 
         titleStartColour = Title.color;
         textStartColour = Text.color;
