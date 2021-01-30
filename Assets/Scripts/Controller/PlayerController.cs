@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundMask;
     public LayerMask interactMask;
+    public LayerMask touchableMask;
     public Transform pickupIcon;
     public NoteController noteController;
 
@@ -20,7 +21,8 @@ public class PlayerController : MonoBehaviour
     bool grounded = true;
     const float gravity = -9.81f;
     const float groundDistance = 0.1f;
-    const float interactDistance = 300f;
+    const float interactDistance = 3f;
+    const float touchDistance = 2f;
 
     float rotationX;
 
@@ -28,6 +30,9 @@ public class PlayerController : MonoBehaviour
 
     Transform self;
     GameObject playerObject;
+
+    List<Note> collectedNotes = new List<Note>();
+    List<Guid> wallsPassed = new List<Guid>();
 
     // Start is called before the first frame update
     void Start()
@@ -45,14 +50,13 @@ public class PlayerController : MonoBehaviour
         UpdateMovement();
         UpdateLook();
         UpdatePickup();
-        //UpdateJump();
+        UpdateTouch();
     }
 
     void UpdatePickup()
     {
         RaycastHit hit;
         Ray ray = new Ray(cam.position, cam.forward);
-        Debug.DrawRay(cam.position, cam.forward, Color.red);
 
         if (Physics.Raycast(ray, out hit, interactDistance, interactMask))
         {
@@ -64,11 +68,8 @@ public class PlayerController : MonoBehaviour
                 {
                     Note note = hitGameobject.GetComponent<NoteEntity>().Note;
                     noteController.DisplayNote(note);
+                    Destroy(hitGameobject);
                 }
-
-                
-
-                Destroy(hitGameobject);
             }
         }
         else
@@ -89,8 +90,8 @@ public class PlayerController : MonoBehaviour
 
     void UpdateMovement()
     {
-        Vector3 rightDir = transform.TransformDirection(Vector3.right);
-        Vector3 forwardsDir = transform.TransformDirection(Vector3.forward);
+        Vector3 rightDir = self.TransformDirection(Vector3.right);
+        Vector3 forwardsDir = self.TransformDirection(Vector3.forward);
 
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
@@ -127,24 +128,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void UpdateTouch()
     {
-       
-        var colTransform = collision.transform;
-        GameObject colGameObject = colTransform.gameObject;
-        Debug.Log(colTransform.tag);
-        switch (colTransform.tag)
+        RaycastHit hit;
+        Ray ray = new Ray(cam.position, cam.forward);
+
+        if (Physics.SphereCast(ray, 1f, out hit, touchDistance, touchableMask))
         {
-            case "LiminalWall":
-                if (DirectorController.instance.eyesOpenPercent < 0.1f)
+            if (DirectorController.instance.eyesOpenPercent < 0.1f)
+            {
+                
+                var hitTransform = hit.transform;
+                var hitObject = hitTransform.gameObject;
+
+                switch (hitObject.tag)
                 {
-                    var liminalEntity = colGameObject.GetComponent<LiminalWallEntity>();
-                    Vector3 target = liminalEntity.teleportTarget + colTransform.position;
-                    self.position = target;
+                    case "LiminalWall":
+                        var liminalEntity = hitObject.GetComponent<LiminalWallEntity>();
+                        if (liminalEntity != null && !wallsPassed.Contains(liminalEntity.guid))
+                        {
+                            characterController.enabled = false;
+                            wallsPassed.Add(liminalEntity.guid);
+                            Vector3 target = liminalEntity.teleportTarget + hitTransform.position;
+                            transform.position = target;
+                            characterController.enabled = true;
+                        }
+                            
+                        
+                        break;
+                    default:
+                        break;
                 }
-                break;
-            default:
-                break;
+            }
         }
     }
+    
 }
