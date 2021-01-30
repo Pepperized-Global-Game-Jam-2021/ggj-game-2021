@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
         {
             grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         }
-        
+
 
     }
 
@@ -135,32 +135,45 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.SphereCast(ray, 1f, out hit, touchDistance, touchableMask))
         {
-            if (DirectorController.instance.eyesOpenPercent < 0.1f)
-            {
-                
-                var hitTransform = hit.transform;
-                var hitObject = hitTransform.gameObject;
 
-                switch (hitObject.tag)
-                {
-                    case "LiminalWall":
-                        var liminalEntity = hitObject.GetComponent<LiminalWallEntity>();
-                        if (liminalEntity != null && !wallsPassed.Contains(liminalEntity.guid))
+
+            var hitTransform = hit.transform;
+            var hitObject = hitTransform.gameObject;
+            Debug.Log("hit");
+
+            switch (hitObject.tag)
+            {
+                case "LiminalWall":
+                    var liminalEntity = hitObject.GetComponent<LiminalWallEntity>();
+                    if (liminalEntity != null && !wallsPassed.Contains(liminalEntity.guid) && DirectorController.instance.eyesOpenPercent < 0.1f)
+                    {
+                        characterController.enabled = false;
+                        wallsPassed.Add(liminalEntity.guid);
+                        Vector3 target = liminalEntity.teleportTarget + hitTransform.position;
+                        transform.position = target;
+                        characterController.enabled = true;
+                    }
+                    break;
+                case "Teleporter":
+                    var teleporter = hitObject.GetComponent<TeleportEntity>();
+                    if (teleporter != null)
+                    {
+                        if (teleporter.CheckDirection(self.position))
                         {
-                            characterController.enabled = false;
-                            wallsPassed.Add(liminalEntity.guid);
-                            Vector3 target = liminalEntity.teleportTarget + hitTransform.position;
+                            //characterController.enabled = false;
+                            Vector3 difference = hitTransform.position - self.position;
+                            Vector3 target = teleporter.TeleportPosition - difference;
                             transform.position = target;
-                            characterController.enabled = true;
+                            //characterController.enabled = true;
                         }
-                            
-                        
-                        break;
-                    default:
-                        break;
-                }
+
+                    }
+                    break;
+                default:
+                    break;
             }
+
         }
     }
-    
+
 }
