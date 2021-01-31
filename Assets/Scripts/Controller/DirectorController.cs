@@ -58,7 +58,8 @@ public class DirectorController : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("Game over");
+        Cursor.lockState = CursorLockMode.None;
+        SceneController.instance.GameOver();
     }
 
     public void Win()
@@ -103,9 +104,9 @@ public class DirectorController : MonoBehaviour
         }
         eyesClosedMaterial.SetFloat("Percent_Value", eyesOpenPercent);
 
-        if (frozenPercent > 1)
+        if (frozenPercent >= 1)
         {
-            Debug.Log("ded");
+            GameOver();
         }
     }
 }
