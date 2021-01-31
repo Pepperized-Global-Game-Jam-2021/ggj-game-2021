@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9183bd7595e134287a0599e59a8502, type: 3}
+  m_Name: FinalStretchNote
+  m_EditorClassIdentifier: 
+  Title: The Final Stretch
+  Text: The darkness I've created weighs me down and makes it hard to breathe.  I
+    realise that it's been so long since I've felt the warmth or felt anything at
+    all for that matter. I've avoided the pain, but at what cost?  I've forgotten
+    the way it feels when the sun envelops my skin, and forgotten the way it sounds
+    when the wind hits the trees.  I've protected myself because I've been afraid,
+    but it dawns on me.. The only thing I have to fear is fear itself and it's time
+    escape from its suffocating grip. Just one last stretch..
