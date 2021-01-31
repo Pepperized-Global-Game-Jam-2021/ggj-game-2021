@@ -64,7 +64,7 @@ public class DirectorController : MonoBehaviour
 
     public void Win()
     {
-        Debug.Log("Win!");
+        SceneController.instance.WinScreen();
     }
 
     // Start is called before the first frame update

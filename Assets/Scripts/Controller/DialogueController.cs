@@ -11,6 +11,8 @@ public class DialogueController : MonoBehaviour
 
     public Sprite introSprite;
     public Sprite winSprite;
+    public Transform credits;
+    public Transform panel;
 
     public enum Cutscene
     {
@@ -36,21 +38,22 @@ public class DialogueController : MonoBehaviour
 
     IEnumerator Win()
     {
+        credits.gameObject.SetActive(false);
         image.sprite = winSprite;
         image.enabled = true;
         text.text = "I escape the hell of my own creation";
-        yield return new WaitForSeconds(0.3f);
-        yield return new WaitUntil(() => Input.anyKeyDown);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(3f);
         text.text = "It is not the end of my struggles";
-        yield return new WaitUntil(() => Input.anyKeyDown);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(3f);
         text.text = "But now I can count on myself as an ally";
-        yield return new WaitUntil(() => Input.anyKeyDown);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(3f);
         text.text = "Above all, that brings me hope";
-        yield return new WaitUntil(() => Input.anyKeyDown);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(3f);
+        text.enabled = false;
+        image.enabled = false;
+        credits.gameObject.SetActive(true);
+        panel.gameObject.SetActive(false);
+        yield return new WaitForSecondsRealtime(15f);
         SceneController.instance.MainMenu();
     }
 

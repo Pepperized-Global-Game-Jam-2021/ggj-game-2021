@@ -11,6 +11,9 @@ TagManager:
   - Door
   - Trigger
   - WinWall
+  - Saferoom
+  - Carpet
+  - Invisible
   layers:
   - Default
   - TransparentFX
@@ -20,7 +23,7 @@ TagManager:
   - UI
   - Interactable
   - Touchable
-  - 
+  - MusicTrigger
   - 
   - 
   - 

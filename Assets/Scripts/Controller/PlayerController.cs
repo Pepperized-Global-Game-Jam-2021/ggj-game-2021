@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     const float groundDistance = 0.1f;
     const float interactDistance = 3f;
     const float touchDistance = 1f;
+    const float footstepFrequency = .6f;
+    float footstepTimer = 0;
 
     float rotationX;
 
@@ -88,6 +90,28 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        switch (other.gameObject.name)
+        {
+            case "SaferoomTrigger":
+                AudioController.instance.ChangeMusic(AudioController.MusicTrack.Saferoom);
+                break;
+            case "AmbienceTrigger":
+                AudioController.instance.ChangeMusic(AudioController.MusicTrack.Ambience);
+                break;
+            case "ChaseTrigger":
+                AudioController.instance.ChangeMusic(AudioController.MusicTrack.Chase);
+                break;
+            case "StingerTrigger":
+                AudioController.instance.PlayStinger();
+                Destroy(other.gameObject);
+                break;
+            default:
+                break;
+        }
+    }
+
     void NoteInteraction()
     {
         if (collectedNotes.Count == 0 && currentNote == null)
@@ -101,7 +125,8 @@ public class PlayerController : MonoBehaviour
             currentNote = collectedNotes[0];
             collectedNotes.Remove(currentNote);
             NoteController.instance.DisplayNote(currentNote);
-            MessageController.instance.EnqueueMessage("Click to burn...");
+            MessageController.instance.DisplayMessage("Click to burn...");
+            AudioController.instance.PlayNotePickup();
         }
         else
         {
@@ -110,6 +135,7 @@ public class PlayerController : MonoBehaviour
             currentNote = null;
             MessageController.instance.DisplayMessage("You feel yourself become warmer...");
             DirectorController.instance.frozenPercent = 0;
+            AudioController.instance.PlayBurnNote();
             if (collectedNotes.Count == 0)
             {
                 state = State.Normal;
@@ -156,6 +182,7 @@ public class PlayerController : MonoBehaviour
                     }
                     if (!collectedNotes.Contains(note))
                     {
+                        AudioController.instance.PlayNotePickup();
                         collectedNotes.Add(note);
                         MessageController.instance.DisplayMessage("You picked up a note...");
                         Destroy(hitGameobject);
@@ -186,6 +213,7 @@ public class PlayerController : MonoBehaviour
                     {
                         if (flagCompleted)
                         {
+                            AudioController.instance.PlayDoorOpen();
                             doorController.isOpen = true;
                             doorController.OpenDoor(transform.position);
                         }
@@ -215,10 +243,29 @@ public class PlayerController : MonoBehaviour
 
     void UpdateGrounded()
     {
-        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        RaycastHit hit;
+        grounded = Physics.SphereCast(groundCheck.position, groundDistance, Vector3.down, out hit, groundMask);
         if (grounded) velocity.y = 0;
 
-
+        if (grounded && (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0))
+        {
+            footstepTimer += Time.deltaTime;
+            if (footstepTimer > footstepFrequency)
+            {
+                footstepTimer = 0;
+                switch (hit.collider.gameObject.tag)
+                {
+                    case "Carpet":
+                        AudioController.instance.PlayCarpetFootstep();
+                        break;
+                    case "Invisible":
+                        break;
+                    default:
+                        AudioController.instance.PlayHardFootstep();
+                        break;
+                }
+            }
+        }
     }
 
     void UpdateMovement()
@@ -272,7 +319,6 @@ public class PlayerController : MonoBehaviour
 
             var hitTransform = hit.transform;
             var hitObject = hitTransform.gameObject;
-            Debug.Log("hit");
 
             switch (hitObject.tag)
             {

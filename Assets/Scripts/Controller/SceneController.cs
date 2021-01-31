@@ -34,7 +34,7 @@ public class SceneController : MonoBehaviour
 
     public void WinScreen()
     {
-        SceneManager.LoadScene("WinScreen");
+        SceneManager.LoadScene("Win");
     }
 
     public void MainMenu()
