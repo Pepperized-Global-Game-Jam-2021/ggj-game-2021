@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public Transform handIconObject;
     public Sprite pickupSprite;
     public Sprite pushSprite;
+    public Transform enemyTransform;
+    public Transform finalDoorRoot;
 
     private Image handIcon;
 
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     Vector3 velocity;
 
-    Transform self;
+    public static Transform self;
     GameObject playerObject;
 
     List<Note> collectedNotes = new List<Note>();
@@ -121,6 +123,9 @@ public class PlayerController : MonoBehaviour
         {
             case "The Walls Themselves":
                 DirectorController.instance.CompleteFlag(DirectorController.Flags.FirstNoteTaken);
+                break;
+            case "Letting Go":
+                DirectorController.instance.CompleteFlag(DirectorController.Flags.Win);
                 break;
             default:
                 break;
@@ -288,6 +293,19 @@ public class PlayerController : MonoBehaviour
                             //characterController.enabled = true;
                         }
 
+                    }
+                    break;
+                case "Trigger":
+                    switch (hitObject.name)
+                    {
+                        case "ChaseTrigger":
+                            enemyTransform.gameObject.SetActive(true);
+                            break;
+                        case "ChaseEndTrigger":
+                            enemyTransform.gameObject.SetActive(false);
+                            break;
+                        default:
+                            break;
                     }
                     break;
                 default:

@@ -9,6 +9,7 @@ TagManager:
   - Teleporter
   - Fireplace
   - Door
+  - Trigger
   layers:
   - Default
   - TransparentFX

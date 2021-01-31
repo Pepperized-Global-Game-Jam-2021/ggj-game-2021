@@ -12,7 +12,9 @@ public class DirectorController : MonoBehaviour
         FirstNoteTaken,
         SecondNoteTaken,
         Collectathon,
-        CollectathonComplete
+        CollectathonComplete,
+        SpatialPuzzle,
+        Win
     }
 
     public float frozenPercent = 0f;
@@ -52,6 +54,11 @@ public class DirectorController : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("Game over");
     }
 
     // Start is called before the first frame update
