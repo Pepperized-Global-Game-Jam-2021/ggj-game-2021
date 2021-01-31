@@ -196,6 +196,15 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
+            if (hitGameobject.tag == "WinWall")
+            {
+                handIconObject.gameObject.SetActive(true);
+                handIcon.sprite = pushSprite;
+                if (Input.GetButton("Interact"))
+                {
+                    DirectorController.instance.Win();
+                }
+            }
             
         }
         else
@@ -303,6 +312,10 @@ public class PlayerController : MonoBehaviour
                             break;
                         case "ChaseEndTrigger":
                             enemyTransform.gameObject.SetActive(false);
+                            finalDoorRoot.localRotation = Quaternion.Euler(Vector3.zero);
+                            break;
+                        case "KillTrigger":
+                            DirectorController.instance.GameOver();
                             break;
                         default:
                             break;

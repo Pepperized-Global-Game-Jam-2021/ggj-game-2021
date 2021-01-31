@@ -61,6 +61,11 @@ public class DirectorController : MonoBehaviour
         Debug.Log("Game over");
     }
 
+    public void Win()
+    {
+        Debug.Log("Win!");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
