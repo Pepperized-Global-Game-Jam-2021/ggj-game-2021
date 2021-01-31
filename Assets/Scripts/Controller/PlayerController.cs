@@ -173,14 +173,21 @@ public class PlayerController : MonoBehaviour
                 
                 DoorController doorController = hitGameobject.GetComponentInParent<DoorController>();
                 bool flagCompleted = doorController.requiredFlag == DirectorController.Flags.None || DirectorController.instance.IsFlagCompleted(doorController.requiredFlag);
-                if (!doorController.isOpen && flagCompleted)
+                if (!doorController.isOpen)
                 {
                     handIconObject.gameObject.SetActive(true);
                     handIcon.sprite = pushSprite;
                     if (Input.GetButton("Interact"))
                     {
-                        doorController.isOpen = true;
-                        doorController.OpenDoor(transform.position);
+                        if (flagCompleted)
+                        {
+                            doorController.isOpen = true;
+                            doorController.OpenDoor(transform.position);
+                        }
+                        else
+                        {
+                            MessageController.instance.DisplayMessage("It won't budge");
+                        }
                     }
                 }
             }
@@ -194,10 +201,8 @@ public class PlayerController : MonoBehaviour
 
     void UpdateGrounded()
     {
-        if (!grounded)
-        {
-            grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        }
+        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (grounded) velocity.y = 0;
 
 
     }
@@ -272,7 +277,9 @@ public class PlayerController : MonoBehaviour
                     var teleporter = hitObject.GetComponent<TeleportEntity>();
                     if (teleporter != null)
                     {
-                        if (teleporter.CheckDirection(self.position))
+                        bool flagCompleted = teleporter.requiredFlag == DirectorController.Flags.None || DirectorController.instance.IsFlagCompleted(teleporter.requiredFlag);
+
+                        if (teleporter.CheckDirection(self.position) && flagCompleted)
                         {
                             //characterController.enabled = false;
                             Vector3 difference = hitTransform.position - self.position;

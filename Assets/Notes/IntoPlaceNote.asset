@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9183bd7595e134287a0599e59a8502, type: 3}
+  m_Name: IntoPlaceNote
+  m_EditorClassIdentifier: 
+  Title: Fall into Place
+  Text: "I expected to know where I\u2019d be going. I thought once I\u2019m there
+    I\u2019d figure it out and it will all fall into place. Instead I am as lost
+    as when I started\u2026 Is it my fault? Have I done something wrong? Made a wrong
+    turn? It\u2019s so lonely\u2026"

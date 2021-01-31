@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9183bd7595e134287a0599e59a8502, type: 3}
+  m_Name: ColdNote
+  m_EditorClassIdentifier: 
+  Title: Hell Froze Over
+  Text: "Suddenly I feel a sudden sensation. It feels warmer somehow. Maybe I am
+    close to an exit\u2026 It\u2019s almost warm enough for my fingers to turn pink
+    again and my teeth to stop from chattering. Almost."

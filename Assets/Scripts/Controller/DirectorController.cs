@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.UI;
 
 public class DirectorController : MonoBehaviour
 {
@@ -8,7 +10,9 @@ public class DirectorController : MonoBehaviour
     {
         None,
         FirstNoteTaken,
-        SecondNoteTaken
+        SecondNoteTaken,
+        Collectathon,
+        CollectathonComplete
     }
 
     public float frozenPercent = 0f;
@@ -18,6 +22,7 @@ public class DirectorController : MonoBehaviour
     public Material eyesClosedMaterial;
     public AnimationCurve frozenEyeCloseCurve;
     public bool isFreezingPaused = false;
+    public Image frozenVingette;
 
     public static DirectorController instance;
 
@@ -26,11 +31,21 @@ public class DirectorController : MonoBehaviour
     public void CompleteFlag(Flags flag)
     {
         flagsCompleted.Add(flag);
+
+        if (FlagAmount(Flags.Collectathon) > 2 && !IsFlagCompleted(Flags.CollectathonComplete))
+        {
+            CompleteFlag(Flags.CollectathonComplete);
+        }
     }
 
     public bool IsFlagCompleted(Flags flag)
     {
         return flagsCompleted.Contains(flag);
+    }
+
+    public int FlagAmount(Flags flag)
+    {
+        return flagsCompleted.Count(x => x == Flags.Collectathon);
     }
 
     private void Awake()
@@ -51,11 +66,18 @@ public class DirectorController : MonoBehaviour
         if (!isFreezingPaused) frozenPercent += freezeSpeed * Time.deltaTime;
 
         float eyesOpenMaxPercent = 1;
+        float vingetteOpacity = 0;
 
         if (frozenPercent > 0.8f)
         {
             eyesOpenMaxPercent = frozenEyeCloseCurve.Evaluate(Mathf.InverseLerp(1, 0.8f, frozenPercent));
         }
+        if (frozenPercent > 0.6f)
+        {
+            vingetteOpacity = Mathf.InverseLerp(0.6f, 1f, frozenPercent);
+        }
+
+        frozenVingette.color = new Color(frozenVingette.color.r, frozenVingette.color.g, frozenVingette.color.b, vingetteOpacity);
 
         if (Input.GetButton("CloseEyes"))
         {
